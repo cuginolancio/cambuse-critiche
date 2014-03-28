@@ -1,0 +1,43 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <h1>ADMIN _ Lista Prodotti</h1>
+    <div class="table-responsive">
+        <div><a class="btn btn-default" href="{{ path('admin.product.new') }}"><span class="glyphicon glyphicon-plus"></span></a></div>
+        <table class="products table-hover table-striped table">
+            <thead>
+                <tr class="product ">
+                    <td>Codice</td>
+                    <td>Nome</td>
+                    <td>Categoria</td>
+                    <td>Prezzo riservato</td>
+                    <td>Prezzo di vendita</td>
+                    <td>Pezzi in confezione</td>
+                    <td>Bio</td>
+                    <td>Stato</td>
+                    
+                    <td>Totale Prodotti: {{products |length}}</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+            <tr class="product ">
+                <td>{{product.code}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.price_regular}}</td>
+                <td>{{product.pieces_in_package}}</td>
+                <td>{{product.bio ? 'Bio':'&nbsp;'}}</td>
+                <td>{{product.active}}</td>
+                <td>
+                    <a class="btn btn-danger" href="{{ path('admin.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    <a class="btn btn-success" href="{{ path('admin.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-check"></span></a>
+                </td>
+                <td><a class="btn btn-primary" href="{{ path('admin.product.edit', {'id':product.id}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

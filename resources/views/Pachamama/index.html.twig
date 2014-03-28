@@ -1,0 +1,57 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <h1>Lista Prodotti</h1>
+    <form method="POST" action="{{path('pachamama.order')}}">
+    <table class="products table-hover table-striped table">
+        <thead>
+            <tr class="product ">
+                <td>Codice</td>
+                <td>Pezzi in confezione</td>
+                <td>Nome</td>
+                <td>Bio</td>
+                <td>Prezzo riservato</td>
+                <td>Prezzo di vendita</td>
+                <td>Quantità</td>
+                <td>Totale Prodotti: {{products |length}}</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% set currentCategory = '' %}
+        {% for product in products %}
+            {% if(product.category != currentCategory)%}
+                {% set currentCategory = product.category  %}
+                <tr><th colspan="10">{{product.category}}</th></tr>
+            {% endif%}
+            <tr class="product ">
+                <td>{{product.code}}</td>
+                <td>{{product.pieces_in_package}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.bio ? 'Bio':'&nbsp;'}}</td>
+                <td class="price reserved_price"><span id="price_{{product.id}}" >{{product.price}}</span> €</td>
+                <td class="price">{{product.price_regular}} €</td>
+                <td><input class="product_quantity" type="number" name="qty[{{product.code}}]" id="qty_{{product.id}}" value="0" step="1"/></td>
+                <td class="price"><span id="product_total_{{product.id}}"></span></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="product ">
+                <td colspan="6"></td>
+                <td><button class="btn btn-primary btn-order">Ordina</button></td>
+                <td class="price">Totale: <span id="total">0.00</span> €</td>
+            </tr>
+        </tfoot>
+    </table>
+    </form>
+    <style>
+        th{
+        }
+        .price{
+            text-align: right;
+        }
+        .reserved_price{
+            font-weight:bolder;
+        }
+    </style>
+{% endblock %}

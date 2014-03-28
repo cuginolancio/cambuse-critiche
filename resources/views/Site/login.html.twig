@@ -1,0 +1,37 @@
+{% extends 'layout.html.twig' %}
+
+{% block accessmenu %}
+{% endblock %}
+
+{% block content %}
+<div>
+    <h1>Login</h1>
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+        <div class="alert alert-info">
+            <strong>Hint:</strong> Try <code>username</code>/<code>password</code>
+        </div>
+
+    {% endif %}
+    <form action="{{ path('login_check') }}" novalidate method="post">
+        <div class="row">
+            <div class="col-lg-3">
+                <label for="username">Username</label>
+                <input class="form-control" type="text" name="_username" id="username" value="{{ last_username }}" />
+            </div>
+            <div class="col-lg-3">
+                <label for="username">Password</label>
+                <input class="form-control" type="password" name="_password" id="password" value="asd" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <br/>
+                <button name="login" class="btn btn-primary" type="submit" >Login</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -24,14 +24,15 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     protected $email;
     protected $salt;
 
-    static public function loadFromArray(array $userData)
+    static public function loadFromArray(array $userData, $groups)
     {
-        $user = new self($userData['username'], $userData['password'], explode(',', $userData['roles']), true, true, true, true);
+        $user = new self($userData['username'], $userData['password'], $groups, true, true, true, true);
+        
         $user->setEmail($userData['email'])
-                ->setPhone($userData['phone'])
-                ->setName($userData['name'])
-                ->setSurname($userData['surname'])
-                ->setScoutGroup($userData['scout_group']);
+                ->setPhone($userData['cb_telcell'])
+                ->setName($userData['firstname'])
+                ->setSurname($userData['lastname'])
+                ->setScoutGroup($userData['cb_gruppo']);
         return $user; 
     }
     public function __construct($username, $password, array $roles = array(), $enabled = true, $userNonExpired = true, $credentialsNonExpired = true, $userNonLocked = true)
@@ -70,7 +71,8 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
      */
     public function getSalt()
     {
-        return $this->salt;
+        $matches = preg_split("/:/", $this->password);
+        return $matches[1];
     }
 
     /**
@@ -165,4 +167,9 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
         $this->email = $email;
         return $this;
     }
+    
+//    public function __toString()
+//    {
+//        return $this->username;
+//    }
 }

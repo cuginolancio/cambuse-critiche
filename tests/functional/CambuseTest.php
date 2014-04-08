@@ -11,41 +11,12 @@ class CambuseTest extends \Silex\WebTestCase
         $app = require __DIR__.'/../../src/app.php';
         
         $app['exception_handler']->disable();
+        
         $app['session.test'] = true;
-//        $app->run();
+        
         return $app;
     }
     
-    public function testLogin()
-    {
-        $client = $this->createClient();
-        $client->followRedirects(true);
-
-        $crawler = $client->request('GET', '/login');
-
-        $this->assertTrue($client->getResponse()->isOk());
-
-        $form = $crawler->selectButton('Login')->form(array());
-        $crawler = $client->submit($form, array());
-        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
-
-        $form = $crawler->selectButton('Login')->form();
-        $crawler = $client->submit($form, array(
-            '_username' => 'wrong username',
-            '_password' => 'wrong password',
-        ));
-        
-        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
-
-        $form = $crawler->selectButton('Login')->form();
-        $crawler = $client->submit($form, array(
-            '_username' => 'admin',
-            '_password' => 'test',
-        ));
-//        echo $client->getResponse()->getContent();
-//        $this->assertEquals(2, $crawler->filter('a[href="/logout"]')->count());
-    }
-
     public function testInitialPage()
     {
         $client = $this->createClient();
@@ -78,5 +49,37 @@ class CambuseTest extends \Silex\WebTestCase
 //        $this->assertCount(1, $crawler->filter('h1:contains("Contact us")'));
 //        $this->assertCount(1, $crawler->filter('form'));
         
+    }
+    
+    public function testLogin()
+    {
+        
+        $client = $this->createClient();
+        $client->followRedirects(true);
+
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertTrue($client->getResponse()->isOk());
+
+        $form = $crawler->selectButton('Login')->form(array());
+        $crawler = $client->submit($form, array());
+        echo $client->getResponse()->getContent();
+        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
+
+        $form = $crawler->selectButton('Login')->form();
+        $crawler = $client->submit($form, array(
+            '_username' => 'wrong username',
+            '_password' => 'wrong password',
+        ));
+        
+        $this->assertEquals(1, $crawler->filter('.alert-error')->count());
+
+        $form = $crawler->selectButton('Login')->form();
+        $crawler = $client->submit($form, array(
+            '_username' => 'admin',
+            '_password' => 'test',
+        ));
+//        echo $client->getResponse()->getContent();
+//        $this->assertEquals(2, $crawler->filter('a[href="/logout"]')->count());
     }
 }

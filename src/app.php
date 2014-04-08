@@ -5,6 +5,9 @@ use Silex\Provider;
 use Lancio\Cambuse\Provider\UserProvider;
 use Lancio\Cambuse\Controller;
 use Lancio\Cambuse\Repository;
+use Lancio\Security\Authentication\Provider\JoomlaProvider;
+use Lancio\Security\Firewall\JoomlaListener;
+use Lancio\Security\Encoder\JoomlaPasswordEncoder;
 
 //load conf
 switch($app['env']){
@@ -23,7 +26,7 @@ $app->register(new Provider\MonologServiceProvider(), array(
     'monolog.logfile' => __DIR__.'/../logs/development.log',
 ));
 
-$app->register(new Provider\DoctrineServiceProvider());
+$app->register(new Provider\DoctrineServiceProvider() );
 
 $app->register(new Provider\SwiftmailerServiceProvider());
 
@@ -33,8 +36,6 @@ $app->register(new Provider\TranslationServiceProvider(), array(
 $app->register(new Provider\ServiceControllerServiceProvider());
 
 $app->register(new Provider\UrlGeneratorServiceProvider());
-
-$app->register(new Provider\SessionServiceProvider());
 
 $app->register(new Provider\ValidatorServiceProvider(), [
     'validator.validator_service_ids' => array(
@@ -49,16 +50,6 @@ $app->register(new Provider\TwigServiceProvider(), array(
 ));
 $app->register(new Provider\ServiceControllerServiceProvider());
 
-//$app['myapp.encoder.base64'] = new Base64PasswordEncoder();
-//$app['security.encoder_factory'] = $app->share(function ($app) {
-//    return new EncoderFactory(
-//        array(
-//            'Symfony\Component\Security\Core\User\UserInterface' => $app['security.encoder.digest'],
-//            'MyApp\Model\UserInterface'                          => $app['myapp.encoder.base64'],
-//        )
-//    );
-//});
-
 $app->register(new Provider\SecurityServiceProvider(), array(
 //    'security.encoders' => array(
 //        'Lancio\Cambuse\Entity\User' => 'sha512'
@@ -66,7 +57,7 @@ $app->register(new Provider\SecurityServiceProvider(), array(
 //    'security.providers' => array(
 //        'main' => array(
 //            'entity' => array(
-//                'class'     => 'MyProject\Entity\User',
+//                'class'     => 'Lancio\Cambuse\Entity\User',
 //                'property'  => 'username'
 //            )
 //        )
@@ -77,7 +68,8 @@ $app->register(new Provider\SecurityServiceProvider(), array(
         ),
         'admin' => array(
             'pattern' => '^/',
-            "anonymous" => array(),
+//            'joomla' => true,
+            'anonymous' => array(),
             'form' => array(
                 'login_path' => "/login",
                 'check_path' => "/login_check",
@@ -97,8 +89,9 @@ $app->register(new Provider\SecurityServiceProvider(), array(
 //                )
             ),
             'users' => $app->share(function () use ($app) {
-		return new UserProvider($app['db']);
+		return $app['user_provider'];
             }),
+//            'security' => $app['debug'] ? false : true,
         ),
     
 //        'secured' => array(
@@ -106,7 +99,7 @@ $app->register(new Provider\SecurityServiceProvider(), array(
 //            'form' => array('login_path' => '/login', 'check_path' => '/login_check'),
 //            'logout' => array('logout_path' => '/logout'),
 //            'users' => $app->share(function () use ($app) {
-//		return new UserProvider($app['db']);
+//		return new UserProvider($app['dbs']['cambuse']);
 //            }),
 //        ),
     ),
@@ -121,12 +114,46 @@ $app->register(new Provider\SecurityServiceProvider(), array(
     ),
 ));
             
+$app['security.encoder.digest'] = $app->share(function ($app) {
+    return new JoomlaPasswordEncoder();
+});
+
+//$app['security.authentication_listener.factory.joomla'] = $app->protect(function ($name, $options) use ($app) {
+//    // define the authentication provider object
+//    $app['security.authentication_provider.'.$name.'.joomla'] = $app->share(function () use ($app) {
+//        return new JoomlaProvider($app['user_provider'], dirname(__DIR__).'/cache/security_cache');
+//    });
+//
+//    // define the authentication listener object
+//    $app['security.authentication_listener.'.$name.'.joomla'] = $app->share(function () use ($app) {
+//        return new JoomlaListener($app['security'], $app['security.authentication_manager']);
+//    });
+//
+//    return array(
+//        // the authentication provider id
+//        'security.authentication_provider.'.$name.'.joomla',
+//        // the authentication listener id
+//        'security.authentication_listener.'.$name.'.joomla',
+//        // the entry point id
+//        null,
+//        // the position of the listener in the stack
+//        'pre_auth'
+//    );
+//});
+            
+            
+            
 if("dev" === $app['env']){
     $app->register(new Provider\WebProfilerServiceProvider(), array(
         'profiler.cache_dir' => __DIR__.'/../cache/profiler',
         'profiler.mount_prefix' => '/_profiler', // this is the default
     ));
 }
+
+$app->register(new Provider\SessionServiceProvider(), [
+//    'session.storage.save_path' => dirname(__DIR__) . '/cache/sessions'
+]);
+
 
 $app['user'] = $app->share(function() use ($app){
     
@@ -139,7 +166,12 @@ $app['user'] = $app->share(function() use ($app){
 });
 //repositories
 $app['product.repository'] = $app->share(function() use ($app) {
-   return new Repository\ProductRepository($app['db']); 
+   return new Repository\ProductRepository($app['dbs']['cambuse']); 
+});
+
+//providers
+$app['user_provider'] = $app->share(function() use ($app) {
+   return new UserProvider($app['dbs']['j']); 
 });
 
 //validators

@@ -40,3 +40,8 @@ $('.product_quantity').keyup(function(e){
     Cart.updateProduct(id);
     $('#total').text(Cart.total.toFixed(2));
 });
+
+$('.btn-back').click(function(e){
+    e.preventDefault();
+    window.history.back();
+});

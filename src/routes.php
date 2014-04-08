@@ -15,7 +15,9 @@ $app->get("/market", "market.controller:IndexAction")
 $app->get("/pachamama", "pachamama.controller:IndexAction")
         ->bind('pachamama.catalog');
 $app->post("/pachamama/order", "pachamama.controller:OrderAction")->bind('pachamama.order');
-$app->get("/pachamama/confirm", "pachamama.controller:ConfirmAction")->bind('pachamama.confirm');
+$app->match("/pachamama/confirm", "pachamama.controller:ConfirmAction")
+        ->bind('pachamama.confirm')
+        ->method("GET|POST");
 
 $app->get("/user/orders", "user.controller:OrdersAction")
         ->bind('user.orders');

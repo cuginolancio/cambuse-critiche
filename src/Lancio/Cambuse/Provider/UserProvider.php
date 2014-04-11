@@ -20,7 +20,7 @@ class UserProvider implements UserProviderInterface
     
     public function loadUserByUsername($username)
     {
-        $stmt = $this->conn->executeQuery('SELECT * '
+        $stmt = $this->conn->executeQuery('SELECT u.*, p.firstname, p.middlename, p.lastname, p.cb_telcell, p.cb_gruppo, p.cb_unita '
                 . 'FROM j25_users u '
                 . 'INNER JOIN j25_comprofiler p ON (u.id = p.user_id) '
                 . 'WHERE username = ?', array(strtolower($username)));
@@ -51,6 +51,7 @@ class UserProvider implements UserProviderInterface
                 default: 
             }
         }
+        
         return $roles; 
     }
         

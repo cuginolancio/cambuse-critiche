@@ -2,6 +2,9 @@
 
 namespace Lancio\Cambuse\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Lancio\Cambuse\Entity\Product;
+
 class ProductRepository {
     
     private $conn;
@@ -101,7 +104,7 @@ class ProductRepository {
                 . "ORDER BY c.name, p.name";
         $products = $this->conn->fetchAll($sql);
         
-        return $products; 
+        return $this->hidrateArray($products); 
     }
     
     public function findActiveByCodes( array $codes )
@@ -115,7 +118,21 @@ class ProductRepository {
         
         $statement = $this->conn->executeQuery($sql, [$codes], [\Doctrine\DBAL\Connection::PARAM_STR_ARRAY]);
         $products = $statement->fetchAll();
-                
-        return $products; 
+            
+        return $this->hidrateArray($products); 
+    }
+    
+    protected function hidrateArray(array $products = array()) 
+    {
+        $prods = new ArrayCollection;
+        foreach ($products as $product) {
+            $prods->add($this->hidrate($product));
+        }
+        return $prods; 
+    }
+    
+    protected function hidrate(array $product) 
+    { 
+        return Product::loadFromArray($product);
     }
 }

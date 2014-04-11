@@ -1,23 +1,32 @@
 <?php
-
-use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\User\User;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-$app->get("/", "site.controller:IndexAction")->bind('homepage');
+//Request::setTrustedProxies(array('127.0.0.1'));
 
+$app->get("/", "site.controller:IndexAction")
+        ->bind('homepage');
 
-$app->get("/login", "site.controller:LoginAction")->bind('login');
+$app->get("/login", "site.controller:LoginAction")
+        ->bind('login');
 
 $app->get("/market", "market.controller:IndexAction")
         ->bind('market.farms');
 
+
 $app->get("/pachamama", "pachamama.controller:IndexAction")
         ->bind('pachamama.catalog');
-$app->post("/pachamama/order", "pachamama.controller:OrderAction")->bind('pachamama.order');
+
+$app->post("/pachamama/order", "pachamama.controller:OrderAction")
+        ->bind('pachamama.order');
+
 $app->match("/pachamama/confirm", "pachamama.controller:ConfirmAction")
         ->bind('pachamama.confirm')
         ->method("GET|POST");
+
 
 $app->get("/user/orders", "user.controller:OrdersAction")
         ->bind('user.orders');
@@ -56,6 +65,18 @@ $app->delete('/admin/products/{id}', 'admin.controller:deleteAction')
 //            "<p>{$post['body']}</p>";
 //});
 
-require __DIR__ . "/../resources/db/schema.php";
+$app->error(function (\Exception $e, $code) use ($app) {
+    if ($app['debug']) {
+        return;
+    }
 
-return $app;
+    // 404.html, or 40x.html, or 4xx.html, or error.html
+    $templates = array(
+        'errors/'.$code.'.html.twig',
+        'errors/'.substr($code, 0, 2).'x.html.twig',
+        'errors/'.substr($code, 0, 1).'xx.html.twig',
+        'errors/default.html.twig',
+    );
+
+    return new Response($app['twig']->resolveTemplate($templates)->render(array('code' => $code)), $code);
+});

@@ -3,7 +3,6 @@
 {% block content %}
 <h1>Ordina</h1>
     
-    {#<form method="POST" action="{{path('pachamama.order')}}">#}
 {{form_start(form)}}
     <div class="row">
         <div class="col-sm-2">
@@ -40,14 +39,14 @@
                 <th>Nome</th>
                 <th>Prezzo unitario</th>
                 <th>Quantità</th>
-                <th>Totale Prodotti: {{products |length}}</th>
+                <th>Totale Prodotti: {{order.products |length}}</th>
             </tr>
         </thead>
         
         <tbody>
         {% set currentCategory = '' %}
             
-        {% for product in products %}
+        {% for product in order.products %}
             {% if(product.category != currentCategory)%}
                 {% set currentCategory = product.category  %}
                 <tr><th colspan="10">{{product.category}}</th></tr>
@@ -56,8 +55,8 @@
                 <td>{{product.code}}</td>
                 <td>{{product.name}}</td>
                 <td class="price reserved_price">{{product.price| number_format(2) }}</span> €</td>
-                <td>{{product.qty}}</td>
-                <th class="price">{{(product.qty * product.price) | number_format(2) }}</th>
+                <td>{{product.quantity}}</td>
+                <th class="price">{{(product.total) | number_format(2) }}</th>
                 
             </tr>
         {% endfor %}
@@ -67,12 +66,12 @@
                 <td colspan="2"></td>
                 <td><button class="btn btn-default btn-back">Indietro</button></td>
                 <td><button class="btn btn-primary btn-order" type="submit">Ordina</button></td>
-                <td class="price total">Totale: <span id="">{{ total | number_format(2) }}</span> €</td>
+                <td class="price total">Totale: <span id="">{{ order.total | number_format(2) }}</span> €</td>
             </tr>
         </tfoot>
     </table>
 {{form_end(form)}}
-{#    </form>#}
+
     <style>
         th{
         }

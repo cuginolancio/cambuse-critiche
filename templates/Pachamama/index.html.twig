@@ -25,11 +25,11 @@
             {% endif%}
             <tr class="product ">
                 <td>{{product.code}}</td>
-                <td>{{product.pieces_in_package}}</td>
+                <td>{{product.piecesInPackage}}</td>
                 <td>{{product.name}}</td>
                 <td>{{product.bio ? 'Bio':'&nbsp;'}}</td>
                 <td class="price reserved_price"><span id="price_{{product.id}}" >{{product.price| number_format(2) }}</span> €</td>
-                <td class="price">{{product.price_regular| number_format(2) }} €</td>
+                <td class="price">{{product.priceRegular| number_format(2) }} €</td>
                 <td><input class="product_quantity" type="number" name="qty[{{product.code}}]" id="qty_{{product.id}}" value="{{product.qty is defined ?product.qty :0}}" step="1"/></td>
                 <td class="price"><span id="product_total_{{product.id}}"></span></td>
             </tr>

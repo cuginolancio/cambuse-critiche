@@ -9,6 +9,7 @@ namespace Lancio\Cambuse\Entity;
  */
 class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterface
 {
+    private $id;
     private $username;
     private $password;
     private $enabled;
@@ -20,6 +21,7 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     protected $name; 
     protected $surname; 
     protected $scout_group; 
+    protected $unit; 
     protected $phone; 
     protected $email;
     protected $salt;
@@ -28,10 +30,12 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     {
         $user = new self($userData['username'], $userData['password'], $groups, true, true, true, true);
         
-        $user->setEmail($userData['email'])
+        $user->setId($userData['id'])
+                ->setEmail($userData['email'])
                 ->setPhone($userData['cb_telcell'])
                 ->setName($userData['firstname'])
                 ->setSurname($userData['lastname'])
+                ->setUnit($userData['cb_unita'])
                 ->setScoutGroup($userData['cb_gruppo']);
         return $user; 
     }
@@ -122,6 +126,10 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     {
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
     public function getName()
     {
         return $this->name;
@@ -134,6 +142,10 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     {
         return $this->scout_group;
     }
+    public function getUnit()
+    {
+        return $this->unit;
+    }
     public function getPhone()
     {
         return $this->phone;
@@ -141,6 +153,11 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     public function getEmail()
     {
         return $this->email;
+    }
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
     public function setName($name)
     {
@@ -165,6 +182,11 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     public function setEmail($email)
     {
         $this->email = $email;
+        return $this;
+    }
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
         return $this;
     }
     

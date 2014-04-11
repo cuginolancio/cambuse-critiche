@@ -1,4 +1,8 @@
 <?php
+
+use Symfony\Component\Debug\Debug;
+use Symfony\Component\HttpFoundation\Request;
+
 // This check prevents access to debug front controllers that are deployed by accident to production servers.
 // Feel free to remove this, extend it, or make something more sophisticated.
 if (isset($_SERVER['HTTP_CLIENT_IP'])
@@ -11,12 +15,17 @@ if (isset($_SERVER['HTTP_CLIENT_IP'])
 
 require __DIR__ . "/../vendor/autoload.php";
 
-use Symfony\Component\HttpFoundation\Request;
+Debug::enable();
 
 $app = new Silex\Application(["debug" => true, "env" => 'dev'] );
 
 Request::enableHttpMethodParameterOverride();
 
 $app = require __DIR__ . "/../src/app.php";
+
+require __DIR__ . "/../config/{$app['env']}.php";
+
+require __DIR__ . "/../src/shares.php";
+require __DIR__ . "/../src/routes.php";
 
 $app->run();

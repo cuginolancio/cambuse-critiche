@@ -6,6 +6,7 @@ use Silex\Application;
 use Lancio\Cambuse\Repository\ProductRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\Request;
+use Lancio\Cambuse\Event\OrderConfirmEvent;
 
 class PachamamaController
 {
@@ -24,8 +25,8 @@ class PachamamaController
         $lastOrder = $this->app['session']->get('order_request', []);
         
         foreach ($products as &$product) {
-            if (array_key_exists($product['code'], $lastOrder)) {
-                $product['qty'] = $lastOrder[$product['code']];
+            if (array_key_exists($product->getCode(), $lastOrder)) {
+                $product->getQuantity($lastOrder[$product->getCode()]);
             }
         }
 
@@ -46,58 +47,72 @@ class PachamamaController
         }
         
         $products = $this->repo->findActiveByCodes(array_keys($qtyProducts));
-        foreach ($products as $k => $product) {
-            $products[$k]['qty'] = $qtyProducts[$product['code']];
-            $total += $products[$k]['qty'] * $products[$k]['price'];
+        
+        foreach ($products as $product) {
+            $product->setQuantity($qtyProducts[$product->getCode()]);
         }
+        
+        $order = new \Lancio\Cambuse\Entity\Order($this->app['user'], $products);
         
         $action = $this->app['url_generator']->generate('pachamama.confirm');
         
         $this->app['session']->set('order_request', $qtyProducts);
         $this->app['session']->set('order', $products);
         
-        $form = $this->createOrderForm($action, $products);
+        $form = $this->createOrderForm($action, $qtyProducts);
         
         return $this->app['twig']->render('Pachamama/order.html.twig', array(
-            "total" => $total,
-            "products" => $products,
+            "order" => $order,
+            
             "form" => $form->createView(),
         ));
     }
-    private function createOrderForm($action, $products) {
-        $form = $this->app['form.factory']->createBuilder('form', ['data' => serialize($products)])
+    
+    private function createOrderForm($action, $qtyProducts) 
+    {
+        $form = $this->app['form.factory']->createBuilder('form', ['data' => serialize($qtyProducts)])
             ->setAction($action)
             ->setMethod("POST")
             ->add('data', 'hidden', [
                 'constraints' => [new Assert\NotBlank()]
             ])
             ->getForm();
+        
         return $form;
     }
+    
     public function confirmAction(Request $request)
     {
-//        var_dump($request->request->all());
-        $products = $request->request->get('data', "");
-        $products = unserialize($products);
+        $serializedProducts = $request->request->get('data', "");
+        $products = unserialize($serializedProducts);
         $form = $this->createOrderForm("", []);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
             $values = $form->getData();
-            $data = unserialize($values['data']);
+            $qtyProducts = unserialize($values['data']);
 
-            $eventMail = new \Symfony\Component\EventDispatcher\Event();
-            $eventMail
-                    ->setUser($user)
-                    ->setOrder($data);
+            $products = $this->repo->findActiveByCodes(array_keys($qtyProducts));
+        
+            foreach ($products as $product) {
+                $product->setQuantity($qtyProducts[$product->getCode()]);
+            }
+
+            $order = new \Lancio\Cambuse\Entity\Order($this->app['user'], $products);
+
+            $eventMail = new OrderConfirmEvent();
+            $eventMail->setOrder($order);
             
-            $this->app['session']->getBag('flashes')->add("success","Ti abbiamo inviato una email con il riepilogo dell'ordine");
+            $this->app['dispatcher']->dispatch("confirm.order.event", $eventMail);
+            
+            $this->app['session']
+                    ->getBag('flashes')
+                    ->add("success","Ti abbiamo inviato una email con il riepilogo dell'ordine");
 //            $this->app['session']->set('order_request', null);
 //            $this->app['session']->set('order', null);
             return $this->app['twig']->render('Pachamama/confirm.html.twig', []);
         }
         return $this->app->redirect($this->app['url_generator']->generate('pachamama.order'));
-        
         
     }
 }

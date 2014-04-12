@@ -2,6 +2,74 @@
 
 {% block content %}
 <h1>Ordine Completato </h1>
-    
- 
+    <div class="row">
+        <div class="col-sm-2">
+            Nome
+        </div>
+        <div class="col-sm-4">
+            {{app.user.name}}
+        </div>
+        <div class="col-sm-2">
+            Telefono
+        </div>
+        <div class="col-sm-4">
+            {{app.user.phone}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            Gruppo
+        </div>
+        <div class="col-sm-4">
+            {{app.user.scoutGroup}}
+        </div>
+        <div class="col-sm-2">
+            Email
+        </div>
+        <div class="col-sm-4">
+            {{app.user.email}}
+        </div>
+    </div>
+ <table class="products table-hover table-striped table">
+        <thead>
+            <tr class="product ">
+                <th>Codice</th>
+                <th>Nome</th>
+                <th>Prezzo unitario</th>
+                <th>Quantità</th>
+                <th>Totale Prodotti: {{order.products |length}}</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        {% set currentCategory = '' %}
+            
+        {% for product in order.products %}
+            {% if(product.category != currentCategory)%}
+                {% set currentCategory = product.category  %}
+                <tr><th colspan="10">{{product.category}}</th></tr>
+            {% endif%}
+            <tr class="product ">
+                <td>{{product.code}}</td>
+                <td>{{product.name}}</td>
+                <td class="price reserved_price">{{product.price| number_format(2) }}</span> €</td>
+                <td>{{product.quantity}}</td>
+                <th class="price">{{(product.total) | number_format(2) }}</th>
+                
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="product ">
+                <td colspan="3" align="right">Note</td>
+                <td colspan="2">{{ order.note }}</td>
+            </tr>
+            <tr class="product ">
+                <td colspan="2"></td>
+                <td></td>
+                <td></td>
+                <td class="price total">Totale: <span id="">{{ order.total | number_format(2) }}</span> €</td>
+            </tr>
+        </tfoot>
+    </table>
 {% endblock %}

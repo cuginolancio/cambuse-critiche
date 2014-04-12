@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraint;
 
 class UniqueProductCodeInDb extends Constraint
 {
+    public $code = "";
     public $message= 'Questo codice è già presente';
 
     public function validatedBy()

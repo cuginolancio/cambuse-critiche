@@ -63,6 +63,16 @@
         </tbody>
         <tfoot>
             <tr class="product ">
+                <td colspan="2">{{ form_errors(form.note) }}</td>
+                <td align="right">{{ form_label(form.note) }}</td>
+                <td colspan="2">{{ form_widget(form.note) }}</td>
+            </tr>
+            <tr class="product ">
+                <td colspan="2">{{ form_errors(form.accept) }}</td>
+                <td colspan="2" align="right">{{ form_label(form.accept) }}</td>
+                <td align="right">{{ form_widget(form.accept) }}</td>
+            </tr>
+            <tr class="product ">
                 <td colspan="2"></td>
                 <td><button class="btn btn-default btn-back">Indietro</button></td>
                 <td><button class="btn btn-primary btn-order" type="submit">Ordina</button></td>

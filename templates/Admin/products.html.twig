@@ -3,7 +3,7 @@
 {% block content %}
     <h1>ADMIN _ Lista Prodotti</h1>
     <div class="table-responsive">
-        <div><a class="btn btn-default" href="{{ path('admin.product.new') }}"><span class="glyphicon glyphicon-plus"></span></a></div>
+        <div><a class="btn btn-default" href="{{ path('admin.pachamama.product.new') }}"><span class="glyphicon glyphicon-plus"></span></a></div>
         <table class="products table-hover table-striped table">
             <thead>
                 <tr class="product ">
@@ -31,10 +31,10 @@
                 <td>{{product.bio ? 'Bio':'&nbsp;'}}</td>
                 <td>{{product.active}}</td>
                 <td>
-                    <a class="btn btn-danger" href="{{ path('admin.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
-                    <a class="btn btn-success" href="{{ path('admin.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-check"></span></a>
+                    <a class="btn btn-danger" href="{{ path('admin.pachamama.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    <a class="btn btn-success" href="{{ path('admin.pachamama.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-check"></span></a>
                 </td>
-                <td><a class="btn btn-primary" href="{{ path('admin.product.edit', {'id':product.id}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>
+                <td><a class="btn btn-primary" href="{{ path('admin.pachamama.product.edit', {'id':product.id}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>
             </tr>
             {% endfor %}
             </tbody>

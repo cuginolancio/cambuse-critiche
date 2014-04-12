@@ -1,2 +1,58 @@
 {% extends 'layout.html.twig' %}
 
+
+{% block content %}
+<style>
+    tr.order_products{display: none}
+</style>
+<h1>Elenco ordini effettuati </h1>
+    
+ <table class="products table-hover table-striped table">
+        <thead>
+            <tr class="product ">
+                <th>Negozio</th>
+                <th>Id ordine</th>
+                <th>Data</th>
+                <th>N. prodotti</th>
+                <th>Totale</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+        {% for order in orders %}
+            <tr class="order">
+                <td>{{order.shop |capitalize}}</td>
+                <td>{{order.id}}</td>
+                <td>{{order.datetime | date('d.m.Y H:i')}}</td>
+                <td>{{order.getCountItems()}}</td>
+                <th class="price">€ {{(order.total) | number_format(2) }}</th>
+            </tr>
+            <tr class="order_products">
+                <td colspan="5">
+                    <table class="products table-hover table-striped table">
+                        <tbody>
+                        {% set currentCategory = '' %}
+
+                        {% for product in order.products %}
+                            {% if(product.category != currentCategory)%}
+                                {% set currentCategory = product.category  %}
+                                <tr><th colspan="10">{{product.category}}</th></tr>
+                            {% endif%}
+                            <tr class="product ">
+                                <td>{{product.code}}</td>
+                                <td>{{product.name}}</td>
+                                <td class="price reserved_price">{{product.price| number_format(2) }}</span> €</td>
+                                <td>{{product.quantity}}</td>
+                                <th class="price">{{(product.total) | number_format(2) }}</th>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

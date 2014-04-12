@@ -23,7 +23,7 @@ class Product
 
     static public function loadFromArray(array $product, $quantity = 0)
     {
-        $prod = new self();
+        $prod = new static();
         
         $prod->setId($product['id'])
             ->setCode($product['code'])
@@ -63,12 +63,18 @@ class Product
     {
         return $this->pieces_in_package;
     }
-    public function getPrice()
+    public function getPrice($formatted = false)
     {
+        if ($formatted)
+            return number_format($this->price, 2);
+        
         return $this->price;
     }
-    public function getPriceRegular()
+    public function getPriceRegular($formatted = false)
     {
+        if ($formatted)
+            return number_format($this->price_regular, 2);
+        
         return $this->price_regular;
     }
     public function getCategoryId()
@@ -87,9 +93,13 @@ class Product
     {
         return $this->quantity;
     }
-    public function getTotal()
+    public function getTotal($formatted = false)
     {
-        return $this->quantity * $this->price;
+        $total = $this->quantity * $this->price;
+        if ($formatted)
+            return number_format($total, 2);
+        
+        return $total;
     }
     
     public function setBio($bio)

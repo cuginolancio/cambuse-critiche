@@ -19,7 +19,7 @@ class ProductRepository {
     {
         unset($data['category']);
             
-        if($data['id']){
+        if(!empty($data['id'])){
             $this->update($data);
         }else{
             $this->insert($data);

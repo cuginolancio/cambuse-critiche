@@ -7,9 +7,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class UniqueProductCodeInDbValidator extends ConstraintValidator
 {
-
     private $repository;
-//    private $security_context;
 
     public function __construct($repository) {
         $this->repository = $repository;
@@ -18,8 +16,11 @@ class UniqueProductCodeInDbValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint)
     {
+        if ($value === $constraint->code) {
+            return;
+        }
         $product = $this->repository->findByCode($value);
-
+        
         if ($product)
         {
             $this->context->addViolation(

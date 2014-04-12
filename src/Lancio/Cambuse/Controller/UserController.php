@@ -5,20 +5,24 @@ namespace Lancio\Cambuse\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Lancio\Cambuse\Repository\OrderRepository;
 
 class UserController
 {
     protected $app;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, OrderRepository $repo)
     {
         $this->app = $app;
+        $this->orderRepo = $repo;
     }
 
     public function ordersAction()
     {
-        
-        return $this->app['twig']->render('Site/orders.html.twig', array(
+        $user = $this->app['user'];
+        $orders = $this->orderRepo->findAllByUserId($user->getId());
+        return $this->app['twig']->render('User/orders.html.twig', array(
+            'orders' => $orders,
         ));
     }
     

@@ -17,13 +17,15 @@ $app->get("/market", "market.controller:IndexAction")
         ->bind('market.farms');
 
 
-$app->get("/pachamama", "pachamama.controller:IndexAction")
-        ->bind('pachamama.catalog');
+$app->match("/pachamama", "pachamama.controller:IndexAction")
+        ->bind('pachamama.catalog')
+        ->method("GET|POST");
 
-$app->post("/pachamama/order", "pachamama.controller:OrderAction")
-        ->bind('pachamama.order');
+$app->match("/pachamama/order", "pachamama.controller:OrderAction")
+        ->bind('pachamama.order')
+        ->method("GET|POST");
 
-$app->match("/pachamama/confirm", "pachamama.controller:ConfirmAction")
+$app->match("/pachamama/confirm/{id}", "pachamama.controller:ConfirmAction")
         ->bind('pachamama.confirm')
         ->method("GET|POST");
 
@@ -36,23 +38,42 @@ $app->get("/user/orders", "user.controller:OrdersAction")
 
 $app->get('/admin', 'admin.controller:IndexAction')
         ->bind('admin');
-$app->get('/admin/products', 'admin.controller:ProductsAction')
-        ->bind('admin.products');
-$app->patch('/admin/products/{id}', 'admin.controller:changeStatusAction')
-        ->bind('admin.product.status')
+
+$app->get('/admin/pachamama/products', 'admin.pachamama.controller:ProductsAction')
+        ->bind('admin.pachamama.products');
+$app->patch('/admin/pachamama/products/{id}', 'admin.pachamama.controller:changeStatusAction')
+        ->bind('admin.pachamama.product.status')
         ->assert("id","\d+");
-$app->get('/admin/products/{id}', 'admin.controller:editAction')
-        ->bind('admin.product.edit')
+$app->get('/admin/pachamama/products/{id}', 'admin.pachamama.controller:editAction')
+        ->bind('admin.pachamama.product.edit')
         ->assert("id","\d+");
-$app->put('/admin/products/{id}', 'admin.controller:updateAction')
-        ->bind('admin.product.update')
+$app->put('/admin/pachamama/products/{id}', 'admin.pachamama.controller:updateAction')
+        ->bind('admin.pachamama.product.update')
         ->assert("id","\d+");
-$app->get('/admin/products/new', 'admin.controller:newAction')
-        ->bind('admin.product.new');
-$app->post('/admin/products', 'admin.controller:createAction')
-        ->bind('admin.product.create');
-$app->delete('/admin/products/{id}', 'admin.controller:deleteAction')
-        ->bind('admin.product.delete');
+$app->get('/admin/pachamama/products/new', 'admin.pachamama.controller:newAction')
+        ->bind('admin.pachamama.product.new');
+$app->post('/admin/pachamama/products', 'admin.pachamama.controller:createAction')
+        ->bind('admin.pachamama.product.create');
+$app->delete('/admin/pachamama/products/{id}', 'admin.pachamama.controller:deleteAction')
+        ->bind('admin.pachamama.product.delete');
+
+$app->get('/admin/markets/markets', 'admin.market.controller:MarketsAction')
+        ->bind('admin.markets.markets');
+$app->patch('/admin/pachamama/products/{id}', 'admin.market.controller:changeStatusAction')
+        ->bind('admin.markets.market.status')
+        ->assert("id","\d+");
+$app->get('/admin/pachamama/products/{id}', 'admin.market.controller:editAction')
+        ->bind('admin.markets.market.edit')
+        ->assert("id","\d+");
+$app->put('/admin/pachamama/products/{id}', 'admin.market.controller:updateAction')
+        ->bind('admin.markets.market.update')
+        ->assert("id","\d+");
+$app->get('/admin/pachamama/products/new', 'admin.market.controller:newAction')
+        ->bind('admin.markets.market.new');
+$app->post('/admin/pachamama/products', 'admin.market.controller:createAction')
+        ->bind('admin.markets.market.create');
+$app->delete('/admin/pachamama/products/{id}', 'admin.market.controller:deleteAction')
+        ->bind('admin.markets.market.delete');
 
 //$app->get('/blog/{id}', function ($id) use ($app) {
 //    $sql = "SELECT * FROM posts WHERE id = ?";

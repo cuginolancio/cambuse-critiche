@@ -22,7 +22,7 @@ $app['dbs.options'] =  [
     ],
     'cambuse' => [
         'driver'   => 'pdo_sqlite',
-        'path'     => __DIR__.'/../data/app.db',  
+        'path'     => __DIR__.'/../data/app_test.db',  
 //        'driver'    => 'pdo_sqlite',
 //        'host'      => 'mysql_write.someplace.tld',
 //        'dbname'    => 'my_database',
@@ -31,6 +31,11 @@ $app['dbs.options'] =  [
 //        'charset'   => 'utf8',
     ],
 ];
+
+$mailer = $app['swiftmailer.options'];
+$mailer['disable_delivery'] = true;
+//$mailer['delivery_address'] = "cuginolancio@gmail.com";
+$app['swiftmailer.options'] = $mailer;
 
 $app['session.test'] = true;
         

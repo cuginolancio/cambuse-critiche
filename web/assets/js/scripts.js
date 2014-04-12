@@ -45,3 +45,7 @@ $('.btn-back').click(function(e){
     e.preventDefault();
     window.history.back();
 });
+
+$('tr.order td').css('cursor', 'pointer').click(function(){
+    $(this).parent().next().toggle();
+});

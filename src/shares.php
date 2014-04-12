@@ -32,6 +32,12 @@ $app['user'] = $app->share(function() use ($app){
 $app['product.repository'] = $app->share(function() use ($app) {
    return new Repository\ProductRepository($app['dbs']['cambuse']); 
 });
+$app['order.repository'] = $app->share(function() use ($app) {
+   return new Repository\OrderRepository($app['dbs']['cambuse'], $app['product.repository']); 
+});
+$app['market.repository'] = $app->share(function() use ($app) {
+   return new Repository\MarketRepository($app['dbs']['cambuse']); 
+});
 
 //providers
 $app['user_provider'] = $app->share(function() use ($app) {
@@ -45,7 +51,7 @@ $app['unique.product.validator'] = $app->share(function() use ($app) {
 
 //controllers
 $app['pachamama.controller'] = $app->share(function() use ($app) {
-    return new Controller\PachamamaController($app, $app['product.repository']);
+    return new Controller\PachamamaController($app, $app['order.repository'],  $app['product.repository']);
 });
 $app['market.controller'] = $app->share(function() use ($app) {
     return new Controller\MarketController($app, $app['product.repository']);
@@ -54,29 +60,29 @@ $app['site.controller'] = $app->share(function() use ($app) {
     return new Controller\SiteController($app);
 });
 $app['user.controller'] = $app->share(function() use ($app) {
-    return new Controller\UserController($app);
+    return new Controller\UserController($app, $app['order.repository']);
 });
 
 $app['admin.controller'] = $app->share(function() use ($app) {
-    return new Controller\AdminController($app, $app['product.repository']);
+    return new Controller\AdminController($app);
 });
-
+$app['admin.market.controller'] = $app->share(function() use ($app) {
+    return new Controller\AdminMarketController($app, $app['market.repository']);
+});
+$app['admin.pachamama.controller'] = $app->share(function() use ($app) {
+    return new Controller\AdminPachamamaController($app, $app['product.repository']);
+});
 
 // Listener
 $app['confirm.order.listener'] = $app->share(function() use ($app) {
-    return new OrderEmailListener($app, $app['product.repository']);
+    return new OrderEmailListener($app, $app['debug']);
 });
-//$app->boot();
+
+$app['dispatcher']->addListener("confirm.order.event", function(OrderConfirmEvent $e ) use($app) {
+    $app['confirm.order.listener']->sendEmail($e);
+});
 
 require __DIR__ . "/../resources/db/schemaCambuse.php";
 require __DIR__ . "/../resources/db/schemaJoomla.php";
-
-
-
-$app['dispatcher']->addListener("confirm.order.event", function(OrderConfirmEvent $e ) use($app) {
-    
-    $app['confirm.order.listener']->sendToCustomer($e);
-    $app['confirm.order.listener']->sendToBusiness($e);
-});
 
 return $app;

@@ -25,7 +25,7 @@ class JoomlaProvider implements AuthenticationProviderInterface
     public function authenticate(TokenInterface $token)
     {
         $user = $this->userProvider->loadUserByUsername($token->getUsername());
-//var_dump($user);
+
         if ($user && $this->validatePassword($token->getCredentials(), $user->getPassword())) {
 //            $authenticatedToken = new JoomlaUserToken($user->getRoles());
             

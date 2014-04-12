@@ -21,12 +21,12 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     protected $name; 
     protected $surname; 
     protected $scout_group; 
-    protected $unit; 
+    protected $scout_unit; 
     protected $phone; 
     protected $email;
     protected $salt;
 
-    static public function loadFromArray(array $userData, $groups)
+    static public function loadFromArray(array $userData, array $groups = [])
     {
         $user = new self($userData['username'], $userData['password'], $groups, true, true, true, true);
         
@@ -35,7 +35,7 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
                 ->setPhone($userData['cb_telcell'])
                 ->setName($userData['firstname'])
                 ->setSurname($userData['lastname'])
-                ->setUnit($userData['cb_unita'])
+                ->setScoutUnit($userData['cb_unita'])
                 ->setScoutGroup($userData['cb_gruppo']);
         return $user; 
     }
@@ -142,9 +142,9 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
     {
         return $this->scout_group;
     }
-    public function getUnit()
+    public function getScoutUnit()
     {
-        return $this->unit;
+        return $this->scout_unit;
     }
     public function getPhone()
     {
@@ -184,9 +184,9 @@ class User implements \Symfony\Component\Security\Core\User\AdvancedUserInterfac
         $this->email = $email;
         return $this;
     }
-    public function setUnit($unit)
+    public function setScoutUnit($unit)
     {
-        $this->unit = $unit;
+        $this->scout_unit = $unit;
         return $this;
     }
     

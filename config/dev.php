@@ -19,7 +19,7 @@ $app['dbs.options'] =  [
     ],
     'cambuse' => [
         'driver'   => 'pdo_sqlite',
-        'path'     => __DIR__.'/../data/app.db',  
+        'path'     => __DIR__.'/../data/app_dev.db',  
 //        'driver'    => 'pdo_sqlite',
 //        'host'      => 'mysql_write.someplace.tld',
 //        'dbname'    => 'my_database',
@@ -29,11 +29,18 @@ $app['dbs.options'] =  [
     ],
 ];
 
+$mailer = $app['swiftmailer.options'];
+//$mailer['disable_delivery'] = true;
+$mailer['delivery_address'] = "cuginolancio@gmail.com";
+$app['swiftmailer.options'] = $mailer;
+
+
 $app->register(new MonologServiceProvider(), array(
     'monolog.logfile' => __DIR__.'/../logs/silex_dev.log',
 ));
 
 $app->register($p = new WebProfilerServiceProvider(), array(
     'profiler.cache_dir' => $app['cache.path'] . '/profiler',
+    'intercept_redirects' => true,
 ));
 $app->mount('/_profiler', $p);

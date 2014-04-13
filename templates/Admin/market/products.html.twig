@@ -29,9 +29,10 @@
                 <td>{{product.price_regular}}</td>
                 <td>{{product.pieces_in_package}}</td>
                 <td>{{product.bio ? 'Bio':'&nbsp;'}}</td>
+                <td>{{product.active}}</td>
                 <td>
-                    <a class="btn btn-danger btn-status {{product.active?'hide':''}}" data-url="{{ path('admin.pachamama.product.status', {'id':product.id, 'status':'enable'}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
-                    <a class="btn btn-success btn-status {{product.active?'':'hide'}}" data-url="{{ path('admin.pachamama.product.status', {'id':product.id, 'status':'disable'}) }}"><span class="glyphicon glyphicon-check"></span></a>
+                    <a class="btn btn-danger" href="{{ path('admin.pachamama.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    <a class="btn btn-success" href="{{ path('admin.pachamama.product.status', {'id':product.id}) }}"><span class="glyphicon glyphicon-check"></span></a>
                 </td>
                 <td><a class="btn btn-primary" href="{{ path('admin.pachamama.product.edit', {'id':product.id}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>
             </tr>

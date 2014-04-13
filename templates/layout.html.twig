@@ -101,5 +101,9 @@
     <script src="{{ app.request.basepath }}/js/libs/jquery-1.11.0.min.js"></script>
     <script src="{{ app.request.basepath }}/assets/js/bootstrap.min.js"></script>
     <script src="{{ app.request.basepath }}/assets/js/scripts.js"></script>
+{#    <script>#}
+        {% block javascripts %}
+        {% endblock %}
+{#    </script> #}
 </body>
 </html>

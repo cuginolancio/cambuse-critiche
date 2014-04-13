@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <h1>ADMIN </h1>
+    <h4>Pachamama</h4>
+    <ul>
+        <li><a href="{{path('admin.pachamama.products')}}">Prodotti</a></li>
+        
+    </ul>
+    
+    <h4>Mercati</h4>
+    <ul>
+        <li><a href="{{path('admin.markets.markets')}}">Mercati</a></li>
+        <li><a href="{{path('admin.pachamama.products')}}">prodotti</a></li>
+        
+    </ul>
+{% endblock %}

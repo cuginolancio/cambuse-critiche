@@ -17,15 +17,15 @@ class MarketRepository {
     public function save( $data )
     {
         if(!empty($data['id'])){
-            $this->update($data);
+            $this->update($data, $data['id']);
         }else{
             $this->insert($data);
         }
     }
     
-    public function update($data)
+    public function update($data, $id)
     {
-        $result = $this->conn->update('markets', $data, ["id" => $data['id']]);
+        $result = $this->conn->update('markets', $data, ["id" => $id]);
         
         return $result;
     }

@@ -24,23 +24,21 @@ class AdminMarketController
     {
         $method = "PUT"; 
         $action = $this->app['url_generator']->generate('admin.markets.market.update', array("id" => $id));
-        $product = $this->productRepo->find($id);
+        $product = $this->marketRepo->find($id);
         
         $form = $this->createForm($product, $method, $action);
         
-        return $this->app['twig']->render('Admin/product_edit.html.twig', array(
+        return $this->app['twig']->render('Admin/market/market_edit.html.twig', array(
             'product' => $product,
             'form' => $form->createView()
         ));
     }
     
-    
-    
     public function updateAction(Request $request, $id)
     {
         $method = "PUT"; 
         $action = $this->app['url_generator']->generate('admin.markets.market.update', array("id" => $id));
-        $product = $this->productRepo->find($id);
+        $product = $this->marketRepo->find($id);
         
         try{
             $product = $this->processForm($product, $request, $method, $action);
@@ -50,7 +48,7 @@ class AdminMarketController
             
             $form = $e->getForm();
         }   
-        return $this->app['twig']->render('Admin/product_edit.html.twig', array(
+        return $this->app['twig']->render('Admin/market/market_edit.html.twig', array(
             'product' => $product,
             'form' => $form->createView()
         ));
@@ -64,7 +62,7 @@ class AdminMarketController
         
         $form = $this->createForm($product, $method, $action);
         
-        return $this->app['twig']->render('Admin/product_new.html.twig', array(
+        return $this->app['twig']->render('Admin/market/market_new.html.twig', array(
             'form' => $form->createView(),
         ));
     }
@@ -84,7 +82,7 @@ class AdminMarketController
             $form = $e->getForm();
         }   
         
-        return $this->app['twig']->render('Admin/product_new.html.twig', array(
+        return $this->app['twig']->render('Admin/market/market_new.html.twig', array(
             'product' => $product,
             'form' => $form->createView()
         ));
@@ -99,7 +97,7 @@ class AdminMarketController
         if ($form->isValid()) {
             $data = $form->getData();
             
-            $this->productRepo->save($data);
+            $this->marketRepo->save($data);
             
             return $data;
         }
@@ -126,23 +124,43 @@ class AdminMarketController
                 'label' => 'Nome',
                 'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 5)))
             ))
-            ->add('price', 'text', array(
-                'label' => 'Prezzo',
-                'constraints' => array(new Assert\NotBlank(), new Assert\Range(array('min' => 0.01)))
+            ->add('city', 'text', array(
+                'label' => 'Comune',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 2)))
             ))
-            ->add('price_regular', 'text', array(
-                'label' => 'Prezzo Riservato',
-                'constraints' => array(new Assert\NotBlank(), new Assert\Range(array('min' => 0.01)))
+            ->add('address', 'text', array(
+                'label' => 'Indirizzo',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 2)))
             ))
-            ->add('pieces_in_package', 'text', array(
-                'label' => 'Pezzi nella confezione',
-                'constraints' => array(new Assert\NotBlank(), new Assert\Range(array('min' => 1)))
+            ->add('description', 'textarea', array(
+                'label' => 'Descrizione',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 2, 'max' => 500)))
             ))
-            ->add('bio', 'choice', array(
-                'label' => 'Biologico',
-                'choices' => array(0 => 'NO', 1 => 'SI'),
-                'expanded' => true,
-                'constraints' => array(new Assert\NotBlank(), new Assert\Choice(array(0,1))),
+//            ->add('bio', 'choice', array(
+//                'label' => 'Biologico',
+//                'choices' => array(0 => 'NO', 1 => 'SI'),
+//                'expanded' => true,
+//                'constraints' => array(new Assert\NotBlank(), new Assert\Choice(array(0,1))),
+//            ))
+            ->add('phone', 'text', array(
+                'label' => 'Telefono',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 2)))
+            ))
+            ->add('mobile', 'text', array(
+                'label' => 'Cellulare',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 2)))
+            ))
+            ->add('email', 'email', array(
+                'label' => 'Email',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Email, new Assert\Length(array('min' => 2)))
+            ))
+            ->add('link', 'text', array(
+                'label' => 'Collegamento',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Length(array('min' => 2)))
+            ))
+            ->add('site', 'text', array(
+                'label' => 'Sito',
+                'constraints' => array(new Assert\NotBlank(), new Assert\Url, new Assert\Length(array('min' => 2)))
             ))
             ->add('active', 'choice', array(
                 'label' => 'Stato',
@@ -150,21 +168,25 @@ class AdminMarketController
                 'expanded' => true,
                 'constraints' => array(new Assert\NotBlank(), new Assert\Choice(array(0,1))),
             ))
-            ->add('category_id', 'choice', array(
-                'label' => 'Categoria',
-                'choices' => $this->productRepo->findCategories(),
-                'expanded' => false,
-                'constraints' => array(new Assert\NotBlank(), new Assert\Choice(array_keys($this->productRepo->findCategories()))),
-            ))
             ->getForm();
         
         return $form;
     }
     
+    public function changeStatusAction($id, $status) 
+    {
+        $active = ("enable" == strtolower($status)) ? true : false;
+        
+        $ok = $this->marketRepo->update(['active' => $active], $id);
+        
+        return new \Symfony\Component\HttpFoundation\JsonResponse(['response' => $ok]);
+    }
+    
     public function marketsAction() 
     {
         $markets = $this->marketRepo->findAll();
-        return $this->app['twig']->render('Admin/markets.html.twig', array(
+        
+        return $this->app['twig']->render('Admin/market/markets.html.twig', array(
             'markets' => $markets
         ));
     }

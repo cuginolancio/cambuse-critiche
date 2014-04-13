@@ -49,3 +49,13 @@ $('.btn-back').click(function(e){
 $('tr.order td').css('cursor', 'pointer').click(function(){
     $(this).parent().next().toggle();
 });
+
+$('.btn-status').click(function(e){
+    e.preventDefault();
+
+    var $el = $(this);
+    var url = $el.attr('data-url');
+    $el.parent().find('.btn-status').toggleClass('hide');
+
+    $.post(url);
+});

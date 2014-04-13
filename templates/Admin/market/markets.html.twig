@@ -28,10 +28,9 @@
                 <td>{{market.phone}}</td>
                 <td>{{market.mobile}}</td>
                 <td>{{market.email}}</td>
-                <td>{{market.active}}</td>
                 <td>
-                    <a class="btn btn-danger" href="{{ path('admin.markets.market.status', {'id':market.id}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
-                    <a class="btn btn-success" href="{{ path('admin.markets.market.status', {'id':market.id}) }}"><span class="glyphicon glyphicon-check"></span></a>
+                    <a class="btn btn-danger btn-status {{market.active?'hide':''}}" data-url="{{ path('admin.markets.market.status', {'id':market.id, 'status':'enable'}) }}"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    <a class="btn btn-success btn-status {{market.active?'':'hide'}}" data-url="{{ path('admin.markets.market.status', {'id':market.id, 'status':'disable'}) }}"><span class="glyphicon glyphicon-check"></span></a>
                 </td>
                 <td><a class="btn btn-primary" href="{{ path('admin.markets.market.edit', {'id':market.id}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>
             </tr>
@@ -39,4 +38,13 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+    {{parent()}}
+    
+    
+    </script>    
 {% endblock %}

@@ -7,4 +7,13 @@ and open the template in the editor.
     Created on : 21-mar-2014, 17.04.40
     Author     : lancio
 */
-
+div#form > div {
+    width:100%;
+}
+div#form > div > label {
+    width:200px;
+    vertical-align: top;
+}
+div#form > div > div > label{
+    width:200px;
+}

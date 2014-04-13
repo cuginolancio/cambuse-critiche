@@ -41,7 +41,7 @@ $app->get('/admin', 'admin.controller:IndexAction')
 
 $app->get('/admin/pachamama/products', 'admin.pachamama.controller:ProductsAction')
         ->bind('admin.pachamama.products');
-$app->patch('/admin/pachamama/products/{id}', 'admin.pachamama.controller:changeStatusAction')
+$app->post('/admin/pachamama/products/{id}/{status}', 'admin.pachamama.controller:changeStatusAction')
         ->bind('admin.pachamama.product.status')
         ->assert("id","\d+");
 $app->get('/admin/pachamama/products/{id}', 'admin.pachamama.controller:editAction')
@@ -59,20 +59,21 @@ $app->delete('/admin/pachamama/products/{id}', 'admin.pachamama.controller:delet
 
 $app->get('/admin/markets/markets', 'admin.market.controller:MarketsAction')
         ->bind('admin.markets.markets');
-$app->patch('/admin/pachamama/products/{id}', 'admin.market.controller:changeStatusAction')
+$app->post('/admin/markets/markets/{id}/{status}', 'admin.market.controller:changeStatusAction')
         ->bind('admin.markets.market.status')
-        ->assert("id","\d+");
-$app->get('/admin/pachamama/products/{id}', 'admin.market.controller:editAction')
+        ->assert("id","\d+")
+        ->assert("status", "(disable|enable)");
+$app->get('/admin/markets/markets/{id}', 'admin.market.controller:editAction')
         ->bind('admin.markets.market.edit')
         ->assert("id","\d+");
-$app->put('/admin/pachamama/products/{id}', 'admin.market.controller:updateAction')
+$app->put('/admin/markets/markets/{id}', 'admin.market.controller:updateAction')
         ->bind('admin.markets.market.update')
         ->assert("id","\d+");
-$app->get('/admin/pachamama/products/new', 'admin.market.controller:newAction')
+$app->get('/admin/markets/markets/new', 'admin.market.controller:newAction')
         ->bind('admin.markets.market.new');
-$app->post('/admin/pachamama/products', 'admin.market.controller:createAction')
+$app->post('/admin/markets/markets', 'admin.market.controller:createAction')
         ->bind('admin.markets.market.create');
-$app->delete('/admin/pachamama/products/{id}', 'admin.market.controller:deleteAction')
+$app->delete('/admin/markets/markets/{id}', 'admin.market.controller:deleteAction')
         ->bind('admin.markets.market.delete');
 
 //$app->get('/blog/{id}', function ($id) use ($app) {

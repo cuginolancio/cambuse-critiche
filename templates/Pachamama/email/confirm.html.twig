@@ -39,7 +39,7 @@
             <th>Nome</th>
             <th>Prezzo unitario</th>
             <th>Quantità</th>
-            <th>Totale Prodotti: {{order.products |length}}</th>
+            <th>Totale Prodotti: {{order.getCountItems}}</th>
         </tr>
     </thead>
 
@@ -54,9 +54,9 @@
         <tr class="product ">
             <td>{{product.code}}</td>
             <td>{{product.name}}</td>
-            <td class="price reserved_price">{{product.price| number_format(2) }}</span> €</td>
+            <td align="right" class="price reserved_price">{{product.price| number_format(2) }}</span> €</td>
             <td>{{product.quantity}}</td>
-            <th class="price">{{(product.total) | number_format(2) }}</th>
+            <th align="right" class="price">{{(product.total) | number_format(2) }} €</th>
         </tr>
     {% endfor %}
     </tbody>
@@ -69,12 +69,12 @@
             <td colspan="2"></td>
             <td></td>
             <td></td>
-            <td class="price total">Totale: <span id="">{{ order.total | number_format(2) }}</span> €</td>
+            <td align="right" class="price total">Totale: <span id="">{{ order.total | number_format(2) }}</span> €</td>
         </tr>
     </tfoot>
 </table>
--- 
-Cambuse Critiche 
-Agesci Zona di Rimini 
-http://www.agescirimini.it
-<small>Email automatica non rispondere a questa email </small>
+-- <br/>|
+Cambuse Critiche <br/>
+Agesci Zona di Rimini <br/>
+http://www.agescirimini.it <br/>
+<small>Email automatica non rispondere a questa email </small><br/>

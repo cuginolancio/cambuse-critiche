@@ -20,15 +20,15 @@ class ProductRepository {
         unset($data['category']);
             
         if(!empty($data['id'])){
-            $this->update($data);
+            $this->update($data, $data['id']);
         }else{
             $this->insert($data);
         }
     }
     
-    public function update($data)
+    public function update($data, $id)
     {
-        $result = $this->conn->update('products', $data,array("id" => $data['id']));
+        $result = $this->conn->update('products', $data,array("id" => $id));
         
         return $result;
     }

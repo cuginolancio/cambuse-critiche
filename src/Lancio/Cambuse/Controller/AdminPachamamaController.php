@@ -28,6 +28,15 @@ class AdminPachamamaController
         ));
     }
     
+    public function changeStatusAction($id, $status) 
+    {
+        $active = ("enable" == strtolower($status)) ? true : false;
+        
+        $ok = $this->productRepo->update(['active' => $active], $id);
+        
+        return new \Symfony\Component\HttpFoundation\JsonResponse(['response' => $ok]);
+    }
+    
     public function editAction(Request $request, $id)
     {
         $method = "PUT"; 

@@ -76,4 +76,13 @@ class MarketRepository {
     { 
         return Market::loadFromArray($market);
     }
+    
+    protected function hidrateArray(array $markets = array()) 
+    {
+        $marketss = new ArrayCollection;
+        foreach ($markets as $market) {
+            $marketss->add($this->hidrate($market));
+        }
+        return $marketss; 
+    }
 }

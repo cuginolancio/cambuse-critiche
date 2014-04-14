@@ -16,8 +16,9 @@ class MarketController
 
     public function indexAction()
     {
-        
+        $markets = $this->app['market.repository']->findAllActive();
         return $this->app['twig']->render('Market/index.html.twig', array(
+            'markets' => $markets,
         ));
     }
     

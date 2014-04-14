@@ -68,4 +68,19 @@ $app->register(new Provider\SecurityServiceProvider(), array(
 
 $app->register(new Provider\SessionServiceProvider());
 
+// Local
+$app['locale'] = 'it';
+$app['session.default_locale'] = $app['locale'];
+
+
+// Cache
+$app['cache.path'] = __DIR__ . '/../cache';
+
+// Http cache
+$app['http_cache.cache_dir'] = $app['cache.path'] . '/http';
+
+// Twig cache
+$app['twig.path'] = array(__DIR__.'/../templates');
+$app['twig.options'] = ['cache' => $app['cache.path'] . '/twig'];
+
 return $app;

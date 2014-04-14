@@ -94,6 +94,11 @@ class Market
         return $this->products;
     }
     
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
     public function setSite($site)
     {
         $this->site = $site;

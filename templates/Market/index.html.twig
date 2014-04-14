@@ -1,17 +1,21 @@
 {% extends 'layout.html.twig' %}
 
 {% block content %}
-    <h1>Lista Mercati</h1>
-    
-    <style>
-        th{
-        }
-        .price{
-            text-align: right;
-        }
-        .reserved_price{
-            font-weight:bolder;
-        }
-    </style>
+    <h1>Mercati</h1>
+    <div class="row">
+        {% for market in markets %}
+        <div class="col-md-3">
+            <h3>{{market.name}}</h3>
+            <div>{{market.address}} - <span>{{market.city}}</span></div>
+            <div>{{market.phone}} - <span>{{market.mobile}}</span></div>
+            <hr>
+            <div>{{market.description}}</div>
+            <hr>
+            <a href="mailto:{{market.email}}" ><span class="glyphicon glyphicon-envelope"></span> {{market.email}}</a>
+            <hr>
+            <a href="{{market.site}}" ><span class="glyphicon glyphicon-globe"></span>{{market.site}}</a>
+        </div>
+        {% endfor %}
+    </div>
     
 {% endblock %}

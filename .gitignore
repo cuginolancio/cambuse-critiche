@@ -2,4 +2,4 @@ vendor/
 logs/*
 data/*
 cache/
-config/prod.php
+config/*
